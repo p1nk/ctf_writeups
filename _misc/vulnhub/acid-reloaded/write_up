@@ -23,7 +23,7 @@ SF-Port22-TCP:V=6.40%I=7%D=9/1%Time=55E5DF5B%P=x86_64-pc-linux-gnu%r(NULL,
 SF:29,"SSH-2\.0-OpenSSH_6\.7p1\x20Ubuntu-5ubuntu1\.3\r\n");
 ------------------------------------------------------------------
 
-As there is only one TCP port open, it's worth seeing if there is a SSH banner:
+As there is only SSH open, it's worth seeing if there is a service banner:
 ------------------------------------------------------------------
     _    ____ ___ ____        ____  _____ _     ___    _    ____  _____ ____
    / \  / ___|_ _|  _ \      |  _ \| ____| |   / _ \  / \  |  _ \| ____|  _ \
@@ -65,7 +65,7 @@ FOUND 10.0.0.141:33447/bin (response code 200)
 ------------------------------------------------------------------
 
 
-At the index of /bin we are greeted with a wonderful login prompt.  I initially started by running sqlmap, in the hopes that it would really be that easy.  However, it didn't produce any results.  So, onto dirs3arch for dir scanning:
+At the index of /bin we are greeted with a wonderful login prompt.  I initially started by running sqlmap, in the hopes that it would really be that easy.  However, it didn't produce any results.  So, onto dirs3arch for further directory enumeration:
 
 [15:38:01] Starting:
 [15:38:01] 200 -    1KB - /bin/index.php
@@ -78,14 +78,14 @@ At the index of /bin we are greeted with a wonderful login prompt.  I initially 
 [20:01:59] 302 -    0B  - /bin/includes/validation.php  ->  ../error.php?err=Could not process login
 
 
-So, moving back to the login prompt, I started testing to see how the login works.  Upon submission of 
-creds:
+Moving back to the login prompt, I started testing to see how the login works.  Upon submission of 
+credentials:
 
 ------------------------------------------------------------------
 <input type="submit" value="Login" onclick="formhash(this.form, this.form.password);" /> 
 ------------------------------------------------------------------
 
-which produces:
+The following network reques is generated from the login
 
 --------------------------------------------
 POST /bin/includes/validation.php HTTP/1.1
@@ -117,7 +117,7 @@ Cookie: sec_session_id=9vvaihsbba8m8pid92vb66k292
 Connection: keep-alive
 --------------------------------------------
 
-It looks like the password is being hashed before being sent.  So, I pointed sqlmap @ the validation.php page (in order to send possible injections in all of the fields (without the password one being hashed)).  Again, no results.
+It looks like the password is being hashed before being sent.  So, I pointed sqlmap at validation.php  (in order to test possible injections in all of the fields [without the password field being hashed[).  Again, no results.
 
 Following the chain of events, I started trying to see if changing value sent in 'error=' sent back to index.php would impact anything.  [It didn't]
 
@@ -125,9 +125,11 @@ I'm going to skip over the half hour or so I spent trying to exploit:
 
 http://<HOST>:33447/bin/error.php
 
-Looking at brute forced files, I haven't looked at dashboard.php yet.  The "You are not authorized to access this page.", makes me think that this is where you are redirected after a successful login.  After running sqlmap and some other tools in an attempt to trigger any results, still nothing. 
+My initial hopes were that there would either be SQL injection or a PHP inclusion vulnerability.
 
-Next step was the try and write what I imagine the successful login request would like like.  I started guessing various params: login=success, login=1, beg=1.  Also started editing the cookie value to null or arbitrary values.
+Looking at files found form brute forceing, I haven't looked at dashboard.php yet.  The "You are not authorized to access this page.", makes me think that this is where you are redirected after a successful login.  After running sqlmap and some other tools in an attempt to trigger any results, I was left without any solid leads. 
+
+Next step was to try replicate as much as possible of a successful login request.  I started guessing various parameters that would indicate a successful login: login=success, login=1, beg=1.  Also started editing the cookie value to null or arbitrary values.
 
 During testing, I added the header Referer: http://<HOST>:33447/bin/includes/validation.php, in order to as accurately as possible match what the request may look like.
 
@@ -138,7 +140,7 @@ Come'on bang your head here. Click.
 - http://<HOST>:334/bin/l33t_haxor.php
 ------------------------------------------------------------------
 
-Within the source is:
+Within the source of the page is:
 
 ------------------------------------------------------------------
 <a href="l33t_haxor.php?id=" style="text-decoration:none"></a> <h3></font>
