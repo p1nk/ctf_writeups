@@ -8,7 +8,9 @@
 
 -----------------------------------
 
-So, getting started, I setup the VM to pull an address from my DHCP server and promptly started an nmap scan.  At first glance, only SSH is open.  
+So, getting started, I setup the VM to pull an address from my DHCP server, started a packet capture and promptly started an nmap scan.  At first glance, only SSH is open and nothing conclusive showed up in the PCAP.  
+
+Following is the result of the nmap scan:
 
 ------------------------------------------------------------------
 Host is up (0.014s latency).
@@ -21,9 +23,7 @@ SF-Port22-TCP:V=6.40%I=7%D=9/1%Time=55E5DF5B%P=x86_64-pc-linux-gnu%r(NULL,
 SF:29,"SSH-2\.0-OpenSSH_6\.7p1\x20Ubuntu-5ubuntu1\.3\r\n");
 ------------------------------------------------------------------
 
-As there is only one TCP port open, it's worth seeing what the SSH banner has:
-
-
+As there is only one TCP port open, it's worth seeing if there is a SSH banner:
 ------------------------------------------------------------------
     _    ____ ___ ____        ____  _____ _     ___    _    ____  _____ ____
    / \  / ___|_ _|  _ \      |  _ \| ____| |   / _ \  / \  |  _ \| ____|  _ \
@@ -38,11 +38,11 @@ Wanna Knock me out ???
 
 ------------------------------------------------------------------
 
-The capitalization and usage of /Knock/ makes me think there is some port knocking involved in this challenge.  Let's test with 3 2 1:
+The capitalization and usage of /Knock/ makes me think there is some port knocking involved in this challenge.  Let's test knocking TCP ports 3 -> 2 -> 1:
 
 knock <HOST> 3 2 1 
 
-So, lets follow up with another nmap scan:
+Following up with a second nmap scan produced:
 
 ------------------------------------------------------------------
 Host is up (0.018s latency).
@@ -56,7 +56,7 @@ SF:29,"SSH-2\.0-OpenSSH_6\.7p1\x20Ubuntu-5ubuntu1\.3\r\n");
 ------------------------------------------------------------------
 
 
-Huzzah! Port 33447 is now open and is running Apache.  Initial checks for ./robots.txt yielded no resuls.  A dirbuster scan shows:
+Huzzah! Port 33447 is now open and running on it isApache.  Initial checks for ./robots.txt yielded no results.  Dirbuster scanning shows shows:
 
 ------------------------------------------------------------------
 {Dirbuster NG 0.1} (c)2012 WintermeW
