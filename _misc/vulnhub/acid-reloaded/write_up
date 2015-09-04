@@ -185,7 +185,7 @@ http://<HOST>:33447/bin/l33t_haxor.php?id=-1%27%29union%28select%28null%29,GROUP
 
 ------------------------------------------------------------------
 
-Standing out is UB3R/strcpy.exe.  Adding those keywords to birbuster, yelided the following:
+Standing out in the database is the table named 'UB3R/strcpy.exe'.  Adding both the path and individual words to dirbuster, yields the following:
 
 ------------------------------------------------------------------
 http://<HOST>:33447//strcpy.exe 404
@@ -195,7 +195,7 @@ http://<HOST>:33447/UB3R/ 403
 http://<HOST>:33447//UB3R/strcpy.exe 200
 ------------------------------------------------------------------
 
-The downloaded file named strcpy.exe has an MD5 hash of c4c0dfd75770c96b78bffe89d4cdedab and the `file` command yields “PDF document, version 1.5”.  My initial thoughts were that there was a embedded JS dropper.  Skipping over the not finding anything useful, after running strings I noticed “%%EOFRar!”.  Running `binwalk`, produced the following output:
+The downloaded file named strcpy.exe has an MD5 hash of c4c0dfd75770c96b78bffe89d4cdedab and the `file` command shows “PDF document, version 1.5”.  My initial thoughts were that there was a embedded JS dropper.  Skipping over the not finding anything useful, after running strings I noticed “%%EOFRar!”.  Running `binwalk`, shows that at the end of the file was a RAR file appended to the end of the file:
 
 ------------------------------------------------------------------
 DECIMAL       HEXADECIMAL     DESCRIPTION
@@ -208,8 +208,7 @@ DECIMAL       HEXADECIMAL     DESCRIPTION
 108356        0x1A744         Zlib compressed data, default compression, uncompressed size >= 154
 109264        0x1AAD0         RAR archive data
 ------------------------------------------------------------------
-At the end of the file is a RAR archive.  Running rar x strcpy.exe produces the following:
-
+At the end of the file is a RAR archive.  Running rar x strcpy.exe extracts the files in the embedded RAR file.
 ------------------------------------------------------------------
 RAR 5.21 beta 2   Copyright (c) 1993-2015 Alexander Roshal   31 Jan 2015
 Trial version             Type RAR -? for help
@@ -236,7 +235,7 @@ Kind & Best Regards,
 Acid
 ------------------------------------------------------------------
 
-Thanks, Acid!  Nice boost at this point.  
+Thanks, Acid!  Nice pep talk at this point.  
 
 Onto the image, initial checking file details do not lead to any obvious results:
 ------------------------------------------------------------------
@@ -265,7 +264,7 @@ Y Cb Cr Sub Sampling            : YCbCr4:4:4 (1 1)
 Image Size                      : 900x636
 ------------------------------------------------------------------
 
-As I do a lot of malware analysis and so I'm always hoping to see interesting strings that may lead to functionality. At the end of the file I noticed the following:
+As I do a lot of malware analysis and so I'm always looking for any interesting strings that may allude to embedded functionality. At the end of the file I noticed the following:
 ------------------------------------------------------------------
 Avinash.contact
 ...
@@ -273,7 +272,7 @@ hint.txt
 `You have found a contact. Now, go and grab the details :-)
 ------------------------------------------------------------------
 
-Again, running binwalk produces the following:
+Again, running binwalk again, it appears there is a RAR file concatonated to the end of the file:
 ------------------------------------------------------------------
 DECIMAL       HEXADECIMAL     DESCRIPTION
 --------------------------------------------------------------------------------
@@ -311,9 +310,9 @@ acid.exploit@gmail.com
 Makke
 Avinash
 
-So, at this point, it looks like we have the credentials acid.exploit@gmail.com\NooB@123. Going back, I tested this against the /bin/index.php page (which failed) and attempted it as SSH creds.  After mixing around the above strings as possible SSH creds, I got a successful login with makke\NooB@123.
+So, at this point, it looks like we have the credentials acid.exploit@gmail.com\NooB@123. Going back, I tested this against the /bin/index.php page (which failed) and attempted it as SSH credentials.  After mixing around the above strings as possible SSH creds, I got a successful login with makke\NooB@123.
 
-An intial directory listing shows;
+An initial directory listing shows;
 
 makke@acid:~$ ls -lahtr
 total 72K
@@ -362,7 +361,6 @@ mount #2
 child threads done
 /etc/ld.so.preload created
 creating shared library
-# ^C
 # whoami
 root
 # cd /root
